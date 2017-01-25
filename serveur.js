@@ -15,10 +15,21 @@ var express = require('express');
 
 var app = express();
 
+// Définition du moteur de vue à EJS
+app.set('view engine', 'ejs');
+
 // Page d'accueil du site
 app.get('/', function(req, res) {
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Vous êtes à l\'accueil');
+	var tab = [
+		{name: 'Bob', level: 10},
+		{name: 'Charles', level: 99},
+		{name: 'Pigne', level: 1},
+	];
+	var titre = 'Quizz';
+    res.render('pages/accueil', {
+    	tab: tab,
+    	titre: titre
+    });
 });
 
 // *******************************
