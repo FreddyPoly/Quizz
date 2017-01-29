@@ -36,6 +36,12 @@ app.get('/', function(req, res) {
     });
 });
 
+// Page de choix de thème
+app.get('/theme', function(req, res) {
+    // Récup les thèmes dispo
+    res.render('pages/theme');
+});
+
 // *******************************
 // Test
 app.get('/etage/:etagenum/chambre', function(req, res) {
