@@ -74,7 +74,6 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     req.session.question_index = 0;
 
     res.redirect('/_get_questions');
-    //get_questions(req, res);
 });
 
 // Page d'affichage d'une question
@@ -86,7 +85,9 @@ app.get('/questions', function(req, res) {
     }
     var titre = 'Question ';
     res.render('pages/questions', {
-        titre: titre
+        titre: titre,
+        questions: req.session.questions.results,
+        indice: req.session.question_index
     })
 });
 
@@ -121,18 +122,6 @@ app.get('/_get_questions', function(req, res) {
         res.redirect('/questions');
     });  
 });
-
-// *******************************
-// Test
-app.get('/etage/:etagenum/chambre', function(req, res) {
-    res.render('accueil.ejs', {etage: req.params.etagenum});
-});
-
-app.get('/compter/:nombre', function(req, res) {
-    var noms = ['Robert', 'Jacques', 'David'];
-    res.render('compter.ejs', {compteur: req.params.nombre, noms: noms});
-});
-// *******************************
 
 // Gestion des requêtes 404
 app.use(function(req, res, next){
