@@ -55,7 +55,6 @@ app.get('/theme', function(req, res) {
 // Sélection du thème
 app.post('/choix_theme', urlencodedParser, function(req, res) {
     req.session.theme = req.body.theme;
-    console.log(req.session);
     res.redirect('/difficulte');
 });
 
@@ -67,54 +66,6 @@ app.get('/difficulte', function(req, res) {
     });
 });
 
-app.get('/_get_questions', function(req, res) {
-    // Génération de l'URL
-    var url_questions = "https://opentdb.com/api.php?amount=3&";
-
-    // Pas de spécification de thème si en aléatoire
-    if(req.session.theme != 0) {
-        url_questions += "category="+req.session.theme+"&";
-    }
-
-    url_questions += "difficulty="+req.session.difficulte+"&type=boolean";
-
-    console.log(url_questions);
-
-    // Requête des questions
-    /*request({
-        uri: url_questions,
-        function(error, response, body) {
-            if(!error && response.statusCode == 200) {
-                console.log("Worked");
-                req.session.questions = JSON.parse(response.body.results);
-            } else {
-                console.log("Didn't worked");
-            }
-        }
-    });*/
-
-    var req_json;
-    request(url_questions, function(error, response, body) {
-        if(!error && response.statusCode == 200) {
-            console.log("Worked");
-            req_json = JSON.parse(response.body);
-        } else if (response.body.response_code == 1) {
-            console.log("Pas assez de réponses")
-        } else if (response.body.response_code == 2) {
-            console.log("Paramètre invalide");
-        } else if (response.body.response_code == 3) {
-            console.log("Token de session non existant");
-        } else if (response.body.response_code == 4) {
-            console.log("Token de session vide");
-        } else {
-            console.log("Didn't worked");
-        }
-    });
-    console.log(req_json);
-
-    res.redirect('/questions');
-});
-
 // Sélection de la difficulté
 app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     req.session.difficulte = req.body.difficulte;
@@ -122,12 +73,7 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     // Initialisation du compteur de questions
     req.session.question_index = 0;
 
-    // Récupération des questions
-    //req.session.questions = ;
-
-    console.log(req.session);
-
-    res.redirect('/_get_questions');
+    get_questions(req, res);
 });
 
 // Page d'affichage d'une question
@@ -142,6 +88,42 @@ app.get('/questions', function(req, res) {
         titre: titre
     })
 });
+
+/*app.get('/_get_questions', function(req, res) {
+    
+}, get_questions(res));*/
+
+function get_questions(req, res) {
+    // Génération de l'URL
+    var url_questions = "https://opentdb.com/api.php?amount=3&";
+
+    // Pas de spécification de thème si en aléatoire
+    if(req.session.theme != 0) {
+        url_questions += "category="+req.session.theme+"&";
+    }
+
+    url_questions += "difficulty="+req.session.difficulte+"&type=boolean";
+
+    // Requête des questions
+    var req_json;
+    request(url_questions, function(error, response, body) {
+        if(!error && response.statusCode == 200) {
+            req_json = JSON.parse(response.body);
+        } else if (response.body.response_code == 1) {
+            console.log("Pas assez de réponses")
+        } else if (response.body.response_code == 2) {
+            console.log("Paramètre invalide");
+        } else if (response.body.response_code == 3) {
+            console.log("Token de session non existant");
+        } else if (response.body.response_code == 4) {
+            console.log("Token de session vide");
+        } else {
+            console.log("Didn't worked");
+        }
+        req.session.questions = req_json;
+        res.redirect('/questions');
+    });
+}
 
 // *******************************
 // Test
