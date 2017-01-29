@@ -54,12 +54,7 @@ app.get('/theme', function(req, res) {
 
 // Sélection du thème
 app.post('/choix_theme', urlencodedParser, function(req, res) {
-    var val_theme = 0;
-    if(!req.body.theme == 32) {
-        val_theme = req.body.theme;
-    }
-
-    req.session.theme = val_theme;
+    req.session.theme = req.body.theme;
     console.log(req.session);
     res.redirect('/difficulte');
 });
@@ -74,9 +69,9 @@ app.get('/difficulte', function(req, res) {
 
 app.get('/_get_questions', function(req, res) {
     // Génération de l'URL
-    var url_questions = "https://opentdb.com/api.php?amount=10&";
+    var url_questions = "https://opentdb.com/api.php?amount=3&";
 
-    // PAs de spécification de thème si en aléatoire
+    // Pas de spécification de thème si en aléatoire
     if(req.session.theme != 0) {
         url_questions += "category="+req.session.theme+"&";
     }
@@ -86,25 +81,31 @@ app.get('/_get_questions', function(req, res) {
     console.log(url_questions);
 
     // Requête des questions
+    var req_json;
     request(url_questions, function(error, response, body) {
         if(!error && response.statusCode == 200) {
             console.log("Worked");
+            req_json = JSON.parse(response.body);
+        } else if (response.body.response_code == 1) {
+            console.log("Pas assez de réponses")
+        } else if (response.body.response_code == 2) {
+            console.log("Paramètre invalide");
+        } else if (response.body.response_code == 3) {
+            console.log("Token de session non existant");
+        } else if (response.body.response_code == 4) {
+            console.log("Token de session vide");
         } else {
             console.log("Didn't worked");
         }
-    });
-    /*request.get({ url: url_questions }, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(response);
-            req.session.response = response;
-            console.log(body);
-            req.session.q_body = json(body);
-        } else {
-            console.log("Didn't worked");
-        }
-    });*/
-    res.redirect('/questions');
+    }, goto_questions(req_json));
 }); 
+
+function goto_questions(json) {
+    console.log(json);
+    res.redirect('/questions', {
+        json: json
+    });
+}
 
 // Sélection de la difficulté
 app.post('/choix_difficulte', urlencodedParser, function(req, res) {
@@ -123,6 +124,12 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
 
 // Page d'affichage d'une question
 app.get('/questions', function(req, res) {
+    req.session.questions = json;
+    if(typeof req.session.questions !== 'undefined') {
+        console.log(req.session.questions.results);
+    } else {
+        console.log("Pas de questions à afficher");
+    }
     var titre = 'Question ';
     res.render('pages/questions', {
         titre: titre
