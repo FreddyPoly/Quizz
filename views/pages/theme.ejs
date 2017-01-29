@@ -2,12 +2,13 @@
 
 <h1>Choisissez un thème</h1>
 
-<form action="/choix_theme" method="post">
-	<button type="submit" name="theme" value="21">Sports</button>
-	<button type="submit" name="theme" value="9">Culture générale</button>
-	<button type="submit" name="theme" value="25">Arts</button>
-	<button type="submit" name="theme" value="32">Aléatoire</button>
-	<button type="submit" value="Valider" />
+<form action="/choix_theme" method="post" id="form_theme">
+	<input type="radio" name="theme" value="21">Sports<br>
+	<input type="radio" name="theme" value="9">Culture générale<br>
+	<input type="radio" name="theme" value="25">Arts<br>
+	<input type="radio" name="theme" value="32">Aléatoire<br>
 </form>
+
+<button type="submit" form="form_theme" value="Submit">Valider</button>
 
 <% include ../partials/footer %>

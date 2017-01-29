@@ -64,8 +64,6 @@ app.post('/choix_theme', function(req, res) {
 
 // Page du choix de la difficulté
 app.get('/difficulte', function(req, res) {
-    console.log(request);
-    console.log(request.body);
     res.render('pages/difficulte');
 });
 
