@@ -73,7 +73,8 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     // Initialisation du compteur de questions
     req.session.question_index = 0;
 
-    get_questions(req, res);
+    res.redirect('/_get_questions');
+    //get_questions(req, res);
 });
 
 // Page d'affichage d'une question
@@ -89,11 +90,7 @@ app.get('/questions', function(req, res) {
     })
 });
 
-/*app.get('/_get_questions', function(req, res) {
-    
-}, get_questions(res));*/
-
-function get_questions(req, res) {
+app.get('/_get_questions', function(req, res) {
     // Génération de l'URL
     var url_questions = "https://opentdb.com/api.php?amount=3&";
 
@@ -122,8 +119,8 @@ function get_questions(req, res) {
         }
         req.session.questions = req_json;
         res.redirect('/questions');
-    });
-}
+    });  
+});
 
 // *******************************
 // Test
