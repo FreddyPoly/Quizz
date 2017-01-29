@@ -14,6 +14,9 @@ var http = require('http');
 var express = require('express');
 var path = require('path');
 var session = require('cookie-session');
+var bodyParser = require('body-parser');
+
+var urlencodedParser = bodyParser.urlencoded({extended: false });
 
 var app = express();
 
@@ -24,7 +27,9 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Utilisation des cookies de session
-app.use(session({secret: 'quizzsecret'}))
+app.use(session({secret: 'quizzsecret'}));
+
+app.use(express.bodyParser());
 
 // Page d'accueil du site
 app.get('/', function(req, res) {
@@ -49,8 +54,7 @@ app.get('/theme', function(req, res) {
 });
 
 // Sélection du thème
-app.post('/choix_theme', function(req, res) {
-    console.log(req);
+app.post('/choix_theme', urlencodedParser, function(req, res) {
     console.log(req.body.theme);
     //req.session.theme = req.body.theme;
     // 21 pour Sports
