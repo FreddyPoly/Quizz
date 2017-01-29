@@ -1,0 +1,15 @@
+<% include ../partials/header %>
+
+<h1>Question <%= indice+1 %></h1>
+
+<p><%= questions[indice].question %></p>
+
+<div><%= bool %></div>
+
+<div><%= !bool %></div>
+
+<form action="/next_question" method="post ">
+	<input type="submit" value="Next Question" />
+</form>
+
+<% include ../partials/footer %>

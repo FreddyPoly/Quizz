@@ -64,21 +64,6 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     res.redirect('/_get_questions');
 });
 
-// Page d'affichage d'une question
-app.get('/questions', function(req, res) {
-    if(typeof req.session.questions !== 'undefined') {
-        console.log(req.session.questions.results);
-    } else {
-        console.log("Pas de questions à afficher");
-    }
-    var titre = 'Question ';
-    res.render('pages/questions', {
-        titre: titre,
-        questions: req.session.questions.results,
-        indice: req.session.question_index
-    })
-});
-
 app.get('/_get_questions', function(req, res) {
     // Génération de l'URL
     var url_questions = "https://opentdb.com/api.php?amount=3&";
@@ -111,18 +96,57 @@ app.get('/_get_questions', function(req, res) {
     });  
 });
 
+// Page d'affichage d'une question
+app.get('/questions', function(req, res) {
+    if(typeof req.session.questions !== 'undefined') {
+        console.log(req.session.questions.results);
+    } else {
+        console.log("Pas de questions à afficher");
+    }
+    var titre = 'Question ';
+    res.render('pages/questions', {
+        titre: titre,
+        questions: req.session.questions.results,
+        indice: req.session.question_index
+    })
+});
+
+// Vérification de la réponse à une question
 app.post('/check_result', urlencodedParser, function(req, res) {
+    console.log("Analyse réponse");
     req.session.reponse = req.body.reponse;
 
     // Vérification de la réponse
     if(req.session.questions.results[req.session.question_index].correct_answer == req.session.reponse) {
         // Bonne réponse
         req.session.score ++;
-    }
-    // Affichage de la bonne réponse
-    display_answer(req.session.reponse);
+    };
 
+    // Affichage de la bonne réponse
+    //display_answer(req.session.reponse);
+
+    res.redirect('/resultats');
+});
+
+// Affichage de la page de résultats
+app.get('/resultats', function(req, res) {
+    var bool = bool;
+
+    var titre = "Résultats";
+    res.render('pages/resultats', {
+        titre: titre,
+        questions: req.session.questions.results,
+        indice: req.session.question_index,
+        bool: bool
+    });
+});
+
+// Navigation vers la prochaine question ou vers l'écran de fin de jeu
+app.post('/next_question', function(req, res) {
     // Test sur le nombre de questions
+    req.session.question_index++;
+
+    res.redirect('/questions');
 });
 
 // Gestion des requêtes 404
