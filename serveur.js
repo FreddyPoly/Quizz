@@ -13,6 +13,7 @@
 var http = require('http');
 var express = require('express');
 var path = require('path');
+var session = require('cookie-session');
 
 var app = express();
 
@@ -21,6 +22,9 @@ app.set('view engine', 'ejs');
 
 // Mise à disposition du dossier 'public' ou se trouve le fichier css
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Utilisation des cookies de session
+app.use(session({secret: 'quizzsecret'}))
 
 // Page d'accueil du site
 app.get('/', function(req, res) {
@@ -42,6 +46,27 @@ app.get('/theme', function(req, res) {
     res.render('pages/theme', {
         titre: titre
     });
+});
+
+// Sélection du thème
+app.post('/choix_theme', function(req, res) {
+    console.log(req);
+    console.log(req.body.theme);
+    //req.session.theme = req.body.theme;
+    // 21 pour Sports
+    // 9 pour culture générale
+    // 25 pour arts
+    // < 32 pour aléatoire
+    res.redirect('/difficulte', {
+        request: req
+    });
+});
+
+// Page du choix de la difficulté
+app.get('/difficulte', function(req, res) {
+    console.log(request);
+    console.log(request.body);
+    res.render('pages/difficulte');
 });
 
 // *******************************
