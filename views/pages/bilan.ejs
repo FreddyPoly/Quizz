@@ -1,0 +1,13 @@
+<% include ../partials/header %>
+
+<h1>Bilan du Quizz</h1>
+<h2>Theme: <%= theme %></h2>
+
+<p>Vous avez obtenu:</p>
+<p><%= score %> / 3</p>
+
+<form action="/reset" method="post">
+	<input type="submit" value="Recommencer un quizz" />
+</form>
+
+<% include ../partials/footer %>

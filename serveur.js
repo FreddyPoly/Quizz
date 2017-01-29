@@ -22,10 +22,6 @@ app.use(session({secret: 'quizzsecret'}));
 
 // Page d'accueil du site
 app.get('/', function(req, res) {
-    // Initialisation des variables de jeu
-	req.session.score = 0;
-    req.session.questions = null;
-
 	var titre = 'Quizz';
     res.render('pages/accueil', {
     	titre: titre
@@ -120,10 +116,8 @@ app.post('/check_result', urlencodedParser, function(req, res) {
     if(req.session.questions.results[req.session.question_index].correct_answer == req.session.reponse) {
         // Bonne réponse
         req.session.score ++;
+        console.log("+1");
     };
-
-    // Affichage de la bonne réponse
-    //display_answer(req.session.reponse);
 
     res.redirect('/resultats');
 });
@@ -143,10 +137,39 @@ app.get('/resultats', function(req, res) {
 
 // Navigation vers la prochaine question ou vers l'écran de fin de jeu
 app.post('/next_question', function(req, res) {
+    console.log("Next question");
     // Test sur le nombre de questions
-    req.session.question_index++;
+    if(req.session.question_index >= 2) {
+        // Quizz terminé
+        res.redirect('/bilan');
+    } else {
+        req.session.question_index++;
+    }
 
     res.redirect('/questions');
+});
+
+// Affichage de la page de bilan
+app.get('/bilan', function(req, res) {
+    var titre = "Bilan du Quizz";
+
+    res.render('pages/bilan', {
+        titre: titre,
+        score: req.session.score,
+        theme: req.session.theme
+    });
+});
+
+// Recommencer un quizz à partir du bilan
+app.post('/reset', function(req, res) {
+    // Initialisation des variables de jeu
+    req.session.score = 0;
+    req.session.questions = "";
+    req.session.question_index = 0;
+    req.session.theme = "";
+
+    // Redirection vers le choix du thème
+    res.redirect('/theme');
 });
 
 // Gestion des requêtes 404
