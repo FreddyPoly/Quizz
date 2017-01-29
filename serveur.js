@@ -29,8 +29,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Utilisation des cookies de session
 app.use(session({secret: 'quizzsecret'}));
 
-app.use(express.bodyParser());
-
 // Page d'accueil du site
 app.get('/', function(req, res) {
 	/*var tab = [
@@ -55,20 +53,22 @@ app.get('/theme', function(req, res) {
 
 // Sélection du thème
 app.post('/choix_theme', urlencodedParser, function(req, res) {
-    console.log(req.body.theme);
+    req.session.theme = req.body.theme;
+    console.log(req.session);
     //req.session.theme = req.body.theme;
     // 21 pour Sports
     // 9 pour culture générale
     // 25 pour arts
     // < 32 pour aléatoire
-    res.redirect('/difficulte', {
-        request: req
-    });
+    res.redirect('/difficulte');
 });
 
 // Page du choix de la difficulté
 app.get('/difficulte', function(req, res) {
-    res.render('pages/difficulte');
+    var titre = 'Choix de la difficulté';
+    res.render('pages/difficulte', {
+        titre: titre
+    });
 });
 
 // *******************************
