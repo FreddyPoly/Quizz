@@ -15,6 +15,7 @@ var express = require('express');
 var path = require('path');
 var session = require('cookie-session');
 var bodyParser = require('body-parser');
+var request = require('request');
 
 var urlencodedParser = bodyParser.urlencoded({extended: false });
 
@@ -54,10 +55,7 @@ app.get('/theme', function(req, res) {
 // Sélection du thème
 app.post('/choix_theme', urlencodedParser, function(req, res) {
     var val_theme = 0;
-    if(req.body.theme == 32) {
-        // Choix d'un thème aléatoire entre 9 et 32
-        val_theme = Math.floor(Math.random() * 32) + 9;
-    } else {
+    if(!req.body.theme == 32) {
         val_theme = req.body.theme;
     }
 
@@ -74,6 +72,40 @@ app.get('/difficulte', function(req, res) {
     });
 });
 
+app.get('/_get_questions', function(req, res) {
+    // Génération de l'URL
+    var url_questions = "https://opentdb.com/api.php?amount=10&";
+
+    // PAs de spécification de thème si en aléatoire
+    if(req.session.theme != 0) {
+        url_questions += "category="+req.session.theme+"&";
+    }
+
+    url_questions += "difficulty="+req.session.difficulte+"&type=boolean";
+
+    console.log(url_questions);
+
+    // Requête des questions
+    request(url_questions, function(error, response, body) {
+        if(!error && response.statusCode == 200) {
+            console.log("Worked");
+        } else {
+            console.log("Didn't worked");
+        }
+    });
+    /*request.get({ url: url_questions }, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(response);
+            req.session.response = response;
+            console.log(body);
+            req.session.q_body = json(body);
+        } else {
+            console.log("Didn't worked");
+        }
+    });*/
+    res.redirect('/questions');
+}); 
+
 // Sélection de la difficulté
 app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     req.session.difficulte = req.body.difficulte;
@@ -86,7 +118,7 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
 
     console.log(req.session);
 
-    res.redirect('/questions');
+    res.redirect('/_get_questions');
 });
 
 // Page d'affichage d'une question
