@@ -53,13 +53,16 @@ app.get('/theme', function(req, res) {
 
 // Sélection du thème
 app.post('/choix_theme', urlencodedParser, function(req, res) {
-    req.session.theme = req.body.theme;
+    var val_theme = 0;
+    if(req.body.theme == 32) {
+        // Choix d'un thème aléatoire entre 9 et 32
+        val_theme = Math.floor(Math.random() * 32) + 9;
+    } else {
+        val_theme = req.body.theme;
+    }
+
+    req.session.theme = val_theme;
     console.log(req.session);
-    //req.session.theme = req.body.theme;
-    // 21 pour Sports
-    // 9 pour culture générale
-    // 25 pour arts
-    // < 32 pour aléatoire
     res.redirect('/difficulte');
 });
 
@@ -69,6 +72,29 @@ app.get('/difficulte', function(req, res) {
     res.render('pages/difficulte', {
         titre: titre
     });
+});
+
+// Sélection de la difficulté
+app.post('/choix_difficulte', urlencodedParser, function(req, res) {
+    req.session.difficulte = req.body.difficulte;
+
+    // Initialisation du compteur de questions
+    req.session.question_index = 0;
+
+    // Récupération des questions
+    req.session.questions = ;
+
+    console.log(req.session);
+
+    res.redirect('/questions');
+});
+
+// Page d'affichage d'une question
+app.get('/questions', function(req, res) {
+    var titre = 'Question ';
+    res.render('pages/questions', {
+        titre: titre
+    })
 });
 
 // *******************************

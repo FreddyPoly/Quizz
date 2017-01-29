@@ -1,6 +1,13 @@
 <% include ../partials/header %>
 
-<h1>Choix de la difficulté</h1>
+<h1>Choisissez une difficulté</h1>
 
+<form action="/choix_difficulte" method="post" id="form_difficulte">
+	<input type="radio" name="difficulte" value="easy">Facile<br>
+	<input type="radio" name="difficulte" value="medium">Moyen<br>
+	<input type="radio" name="difficulte" value="hard">Difficile<br>
+</form>
+
+<button type="submit" form="form_difficulte" value="Submit">Valider</button>
 
 <% include ../partials/footer %>
