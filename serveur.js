@@ -1,14 +1,4 @@
-/*
- * Renvoyer différents types de données (types MIME)
- * Dans l'en tête réponse
- * text/plain: 			texte brut
- * text/html: 			code HTML
- * text/css: 			code CSS
- * image/jpeg: 			image JPEG
- * video/mp4: 			video MP4
- * application/zip: 	fichier ZIP 
-*/
-
+"use strict"
 
 var http = require('http');
 var express = require('express');
@@ -32,14 +22,12 @@ app.use(session({secret: 'quizzsecret'}));
 
 // Page d'accueil du site
 app.get('/', function(req, res) {
-	/*var tab = [
-		{name: 'Bob', level: 10},
-		{name: 'Charles', level: 99},
-		{name: 'Pigne', level: 1},
-	];*/
+    // Initialisation des variables de jeu
+	req.session.score = 0;
+    req.session.questions = null;
+
 	var titre = 'Quizz';
     res.render('pages/accueil', {
-    	//tab: tab,
     	titre: titre
     });
 });
@@ -121,6 +109,20 @@ app.get('/_get_questions', function(req, res) {
         req.session.questions = req_json;
         res.redirect('/questions');
     });  
+});
+
+app.post('/check_result', urlencodedParser, function(req, res) {
+    req.session.reponse = req.body.reponse;
+
+    // Vérification de la réponse
+    if(req.session.questions.results[req.session.question_index].correct_answer == req.session.reponse) {
+        // Bonne réponse
+        req.session.score ++;
+    }
+    // Affichage de la bonne réponse
+    display_answer(req.session.reponse);
+
+    // Test sur le nombre de questions
 });
 
 // Gestion des requêtes 404

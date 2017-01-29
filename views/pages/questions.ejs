@@ -4,4 +4,11 @@
 
 <p><%= questions[indice].question %></p>
 
+<form action="/check_result method="post" id="form_check">
+	<input type="radio" name="reponse" value="True" id="rep_True">True<br>
+	<input type="radio" name="reponse" value="False" id="rep_False">False
+</form>
+
+<button type="submit" form="form_check" value="Submit">Valider</button>
+
 <% include ../partials/footer %>
