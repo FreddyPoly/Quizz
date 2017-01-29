@@ -82,7 +82,7 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
     req.session.question_index = 0;
 
     // Récupération des questions
-    req.session.questions = ;
+    //req.session.questions = ;
 
     console.log(req.session);
 
