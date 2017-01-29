@@ -24,22 +24,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Page d'accueil du site
 app.get('/', function(req, res) {
-	var tab = [
+	/*var tab = [
 		{name: 'Bob', level: 10},
 		{name: 'Charles', level: 99},
 		{name: 'Pigne', level: 1},
-	];
+	];*/
 	var titre = 'Quizz';
     res.render('pages/accueil', {
-    	tab: tab,
+    	//tab: tab,
     	titre: titre
     });
 });
 
 // Page de choix de thème
 app.get('/theme', function(req, res) {
-    // Récup les thèmes dispo
-    res.render('pages/theme');
+    var titre = 'Choix du thème';
+    res.render('pages/theme', {
+        titre: titre
+    });
 });
 
 // *******************************
