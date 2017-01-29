@@ -12,11 +12,15 @@
 
 var http = require('http');
 var express = require('express');
+var path = require('path');
 
 var app = express();
 
 // Définition du moteur de vue à EJS
 app.set('view engine', 'ejs');
+
+// Mise à disposition du dossier 'public' ou se trouve le fichier css
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Page d'accueil du site
 app.get('/', function(req, res) {

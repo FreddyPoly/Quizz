@@ -1,0 +1,20 @@
+h1 {
+	width: 100%;
+	height: auto;
+	top: 20%;
+	left: 50%;
+	text-align: center;
+}
+
+button {
+	width: auto;
+	height: auto;
+	background-color: green;
+	text-align: center;
+	padding: 2%;
+}
+
+#btn_begin {
+	top: 50%;
+	left: 50%;
+}
