@@ -81,6 +81,18 @@ app.get('/_get_questions', function(req, res) {
     console.log(url_questions);
 
     // Requête des questions
+    /*request({
+        uri: url_questions,
+        function(error, response, body) {
+            if(!error && response.statusCode == 200) {
+                console.log("Worked");
+                req.session.questions = JSON.parse(response.body.results);
+            } else {
+                console.log("Didn't worked");
+            }
+        }
+    });*/
+
     var req_json;
     request(url_questions, function(error, response, body) {
         if(!error && response.statusCode == 200) {
@@ -97,15 +109,11 @@ app.get('/_get_questions', function(req, res) {
         } else {
             console.log("Didn't worked");
         }
-    }, goto_questions(req_json));
-}); 
-
-function goto_questions(json) {
-    console.log(json);
-    res.redirect('/questions', {
-        json: json
     });
-}
+    console.log(req_json);
+
+    res.redirect('/questions');
+});
 
 // Sélection de la difficulté
 app.post('/choix_difficulte', urlencodedParser, function(req, res) {
@@ -124,7 +132,6 @@ app.post('/choix_difficulte', urlencodedParser, function(req, res) {
 
 // Page d'affichage d'une question
 app.get('/questions', function(req, res) {
-    req.session.questions = json;
     if(typeof req.session.questions !== 'undefined') {
         console.log(req.session.questions.results);
     } else {
